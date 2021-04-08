@@ -1,0 +1,9 @@
+<ion-content [fullscreen]="true">
+  
+  <div style="text-align: center;border: 1px #3880ff solid;background-color: #3880ff;padding-top: 4px;border-radius: 25px;width: 90%;height:99%;margin: auto;" (click)="closeCardModal()">
+    <div style="margin-top: 55%;">
+      <qrcode [qrdata]="'Your data string'" [width]="200" [errorCorrectionLevel]="'M'" style="top: 50%;"></qrcode>
+    </div>
+  </div>
+
+</ion-content>

@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { CardModalPage } from '../modals/card-modal/card-modal.page';
+import { HistoryModalPage } from '../modals/history-modal/history-modal.page';
 
 @Component({
   selector: 'app-tab1',
@@ -7,6 +10,22 @@ import { Component } from '@angular/core';
 })
 export class Tab1Page {
 
-  constructor() {}
+  constructor(public modalCtrl: ModalController) {}
+
+  async showHistoryModal(){
+    const modal = await this.modalCtrl.create({
+      component: HistoryModalPage
+    });
+
+    return await modal.present();
+  }
+
+  async showCardModal(){
+    const modal = await this.modalCtrl.create({
+      component: CardModalPage
+    });
+    
+    return await modal.present();
+  }
 
 }
