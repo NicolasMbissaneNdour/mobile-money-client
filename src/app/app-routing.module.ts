@@ -7,16 +7,20 @@ const routes: Routes = [
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {
-    path: 'tab5',
-    loadChildren: () => import('./tab5/tab5.module').then( m => m.Tab5PageModule)
-  },
-  {
     path: 'history-modal',
     loadChildren: () => import('./modals/history-modal/history-modal.module').then( m => m.HistoryModalPageModule)
   },
   {
     path: 'card-modal',
     loadChildren: () => import('./modals/card-modal/card-modal.module').then( m => m.CardModalPageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./auth/login/login.module').then( m => m.LoginPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./auth/register/register.module').then( m => m.RegisterPageModule)
   },
 ];
 @NgModule({

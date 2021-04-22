@@ -1,0 +1,11 @@
+Client:
+  > Register (id,phone_number,password)
+  > Login (id,phone_number,password)
+  > Tranfert (id,client_id2,amount)
+  > Purchase (id,id_operators_service_id,phone_number,amount)
+  > Reload (id,cards_service_id,card_number,amount)
+  > Support (id,donations_service_id,amount)
+  > Pay (id,bills_service_id,bill_reference,amount)
+  > GetContacts()
+  
+

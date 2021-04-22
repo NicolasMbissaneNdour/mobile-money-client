@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { CardModalPageRoutingModule } from './card-modal-routing.module';
 
 import { CardModalPage } from './card-modal.page';
+import { QRCodeModule } from 'angularx-qrcode';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CardModalPageRoutingModule
+    CardModalPageRoutingModule,
+    QRCodeModule
   ],
   declarations: [CardModalPage]
 })
