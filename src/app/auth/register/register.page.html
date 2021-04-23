@@ -11,15 +11,22 @@
   <form style="margin: auto;">
     <ion-item lines="full">
       <ion-label position="floating">Téléphone</ion-label>
-      <ion-input type="text" required></ion-input>
+      <ion-input type="text" required name="phoneNumber" [(ngModel)]="phoneNumber"></ion-input>
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Mot de passe</ion-label>
-      <ion-input type="password" required></ion-input>
+      <ion-input type="password" required name="password" [(ngModel)]="password"></ion-input>
     </ion-item>
     <ion-row>
       <ion-col style="text-align: center;">
-        <ion-button expand="block" color="success"><span *ngIf="!loading">Inscription</span><ion-spinner *ngIf="loading" name="lines"></ion-spinner></ion-button>
+        <ion-button expand="block" color="success" (click)="onRegister()" [disabled]="loading">
+          <span *ngIf="!loading" >Inscription</span>
+          <ion-spinner *ngIf="loading" name="lines">
+          </ion-spinner>
+        </ion-button>
+        <ion-text color="danger" *ngIf="errorMsg.length">
+          <div>{{errorMsg}}</div> 
+        </ion-text>
       </ion-col>
     </ion-row>
   </form>

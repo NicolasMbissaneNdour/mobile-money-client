@@ -22,6 +22,10 @@ const routes: Routes = [
     path: 'register',
     loadChildren: () => import('./auth/register/register.module').then( m => m.RegisterPageModule)
   },
+  {
+    path: 'contacts-modal',
+    loadChildren: () => import('./modals/contacts-modal/contacts-modal.module').then( m => m.ContactsModalPageModule)
+  },
 ];
 @NgModule({
   imports: [
