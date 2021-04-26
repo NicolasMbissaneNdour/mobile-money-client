@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ShareService } from '../services/share/share.service';
 
 @Component({
   selector: 'app-tab5',
@@ -44,13 +46,19 @@ export class Tab5Page implements OnInit {
       name:"logout"
     },
   ]
-  constructor() { }
+  constructor(private shareSvc:ShareService,private router:Router) { }
 
   ngOnInit() {
   }
 
   onParam(name){
     console.log(name)
+    if (name == "invite") {
+      this.shareSvc.share()
+    }
+    if(name == "modifyPIN"){
+      this.router.navigate(['/modify-password']);
+    }
   }
 
 }

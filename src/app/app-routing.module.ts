@@ -26,6 +26,10 @@ const routes: Routes = [
     path: 'contacts-modal',
     loadChildren: () => import('./modals/contacts-modal/contacts-modal.module').then( m => m.ContactsModalPageModule)
   },
+  {
+    path: 'modify-password',
+    loadChildren: () => import('./auth/modify-password/modify-password.module').then( m => m.ModifyPasswordPageModule)
+  },
 ];
 @NgModule({
   imports: [
