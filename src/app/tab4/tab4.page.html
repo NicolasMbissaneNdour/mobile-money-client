@@ -9,25 +9,34 @@
 <ion-content [fullscreen]="true">
   <form style="margin: auto;">
     <ion-item lines="full">
-      <ion-label position="floating">À {{contact.name}}</ion-label>
-      <ion-input type="tel" name="phoneNumber" [(ngModel)]="contact.phoneNumber"></ion-input>
+      <ion-label position="floating">À <ion-text color="tertiary"><span>{{contact.name}}</span></ion-text>
+      </ion-label>
+      <ion-input type="tel" name="phoneNumber" [(ngModel)]="contact.phoneNumber" (ionChange)="onNumberChange($event)" maxLength="9" minLength="9" required="true" color="tertiary" ></ion-input>
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Montant</ion-label>
-      <ion-input type="tel" name="amount"></ion-input>
+      <ion-input type="number" name="amount" [(ngModel)]="amount" (ionChange)="onAmountChange()"></ion-input>
     </ion-item>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" [disabled]="loading" (click)="onAcheter()">
+        <ion-button expand="block" [disabled]="loading || !amount || amount > amountAccount || !contact.isValid()" (click)="onBuy()">
           <span *ngIf="!loading">Acheter</span>
           <ion-spinner *ngIf="loading" name="lines"></ion-spinner>
         </ion-button>
       </ion-col>
     </ion-row>
   </form>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="onShowContacts()">
-    <ion-fab-button color="secondary">
-      <ion-icon name="person-add-outline"></ion-icon>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="secondary" [disabled]="loading" (click)="onShowContacts()">
+      <ion-icon name="person-add-outline" *ngIf="!loading"></ion-icon>
+      <ion-spinner *ngIf="loading" name="lines"></ion-spinner>
     </ion-fab-button>
   </ion-fab>
+  <ion-row *ngIf="amount >= amountAccount">
+    <ion-col style="text-align: center;">
+      <ion-text color="danger">
+        <div>Ce montant ne peut être acheté</div>
+      </ion-text>
+    </ion-col>
+  </ion-row>
 </ion-content>

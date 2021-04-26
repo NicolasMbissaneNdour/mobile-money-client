@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Plugins } from '@capacitor/core';
 import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { ContactsService, MobileContact } from '../services/contacts.service';
-import phoneUtil from 'google-libphonenumber';
-const phoneUtilInstance = phoneUtil.PhoneNumberUtil.getInstance();
+import { Contact, ContactsService } from '../services/contacts.service';
 
 
 @Component({
@@ -14,47 +11,53 @@ const phoneUtilInstance = phoneUtil.PhoneNumberUtil.getInstance();
 })
 export class Tab2Page implements OnInit{
 
-  selectedContact : MobileContact;
-  contacts : MobileContact[];
-  contactsAuthorizationSubs : Subscription;
-  nicolas = "nicolas";
+  
+  contact: Contact;
+  amount: number;
+  amountRec:number;
+  amountAccount:number = 10000;
+  canTransfer:Boolean = false;
+  loading:Boolean;
 
-  constructor(private contactsService: ContactsService,
-              private alertCtrl: AlertController) 
+  constructor(private alertCtrl: AlertController,private contactsSvc:ContactsService) 
   {
-    this.selectedContact = new MobileContact('','');
+    this.contact = new Contact('','');
+    this.canTransfer = this.amount < this.amountAccount;
+    this.loading = false;
   }
 
-  ngOnInit(){
-    this.contacts = this.contactsService.contacts;
-    this.contactsService.getContacts();
-    this.contactsAuthorizationSubs = this.contactsService.authorizationSubject.subscribe((value)=>{
-      if(!value){
-        this.presentAlert("Contacts permission is denied!");
-      }
-    });
+  ngOnInit(){}
+  
+ 
+  async onShowContacts(){
+    this.loading = true;
+    const result = await this.contactsSvc.showContacts();
+    if (result) {
+      this.contact = new Contact(result.name,result.phoneNumber);
+    }
+    this.loading = false;
+  }
 
+  onAmountChange(){
+    this.amountRec = this.amount - (this.amount/100)
   }
   
-  async presentAlert(message:string)
-  {
-    const alert = await this.alertCtrl.create({
-      header:'Alert',
-      message:message,
-      buttons:['OK']
-    });
-
-    alert.present();
+  async onNumberChange(){
+    if (this.contact.phoneNumber.length < 9) {
+      this.contact.name = '';
+    }
+    if (this.contact.phoneNumber.length == 9 && this.contact.isValid() && !this.contact.name) {
+      this.loading = true;
+      const result = await this.contactsSvc.SearchContact(this.contact.phoneNumber);
+      if (result) {
+        this.contact.name = result.name;
+      }
+    }
+    this.loading = false;
   }
 
-  selectedContactChange(event){
-    const value = event.target.value;
-    if (!value) {
-      this.contacts = this.contactsService.contacts;
-    }
-    else
-    {
-      this.contacts = this.contactsService.contacts.filter(contact => contact.number.search(value) >= 0);
-    }
+  async onSend(){
+    this.loading = true;
   }
+  
 }

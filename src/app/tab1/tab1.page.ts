@@ -14,7 +14,8 @@ export class Tab1Page {
 
   async showHistoryModal(){
     const modal = await this.modalCtrl.create({
-      component: HistoryModalPage
+      component: HistoryModalPage,
+      swipeToClose:true
     });
 
     return await modal.present();
@@ -22,7 +23,8 @@ export class Tab1Page {
 
   async showCardModal(){
     const modal = await this.modalCtrl.create({
-      component: CardModalPage
+      component: CardModalPage,
+      swipeToClose:true
     });
     
     return await modal.present();

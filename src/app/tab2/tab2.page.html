@@ -9,26 +9,39 @@
 <ion-content [fullscreen]="true">
   <form style="margin: auto;">
     <ion-item lines="full">
-      <ion-label position="floating">À </ion-label>
-      <ion-input type="tel" name="phoneNumber" required></ion-input>
+      <ion-label position="floating">
+        À <ion-text color="tertiary"><span>{{contact.name}}</span></ion-text>
+      </ion-label>
+      <ion-input type="tel" name="phoneNumber" required maxLength="9" [(ngModel)]="contact.phoneNumber" color="tertiary" (ionChange)="onNumberChange()"></ion-input>
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Montant Envoyé</ion-label>
-      <ion-input type="number" name="amount"></ion-input>
+      <ion-input type="number" name="amount" required="true" [(ngModel)]="amount" (ionChange)="onAmountChange()"></ion-input>
     </ion-item>
-    <ion-item lines="full">
+    <ion-item lines="full" *ngIf="amountRec">
       <ion-label position="floating">Montant Reçu</ion-label>
-      <ion-input typ="number" name="amountRec"> </ion-input>
+      <ion-input typ="number" name="amountRec" readonly="true" [(ngModel)]="amountRec"color="success" ></ion-input>
     </ion-item>
     <ion-row>
       <ion-col>
-        <ion-button expand="block">Envoyer</ion-button>
+        <ion-button expand="block" [disabled]="amount >= amountAccount || !amount || loading || !contact.isValid()" (click)="onSend()">
+          <span *ngIf="!loading">Envoyer</span>
+          <ion-spinner *ngIf="loading" name="lines"></ion-spinner>
+        </ion-button>
       </ion-col>
     </ion-row>
   </form>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="secondary">
-      <ion-icon name="person-add-outline"></ion-icon>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
+    <ion-fab-button color="secondary" (click)="onShowContacts()" [disabled]="loading">
+      <ion-icon name="person-add-outline" *ngIf="!loading"></ion-icon>
+      <ion-spinner *ngIf="loading" name="lines"></ion-spinner>
     </ion-fab-button>
   </ion-fab>
+  <ion-row *ngIf="amount >= amountAccount">
+    <ion-col style="text-align: center;">
+      <ion-text color="danger">
+        <div>Ce montant ne peut être envoyé</div>
+      </ion-text>
+    </ion-col>
+  </ion-row>
 </ion-content>

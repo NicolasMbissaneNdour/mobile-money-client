@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Contact, ContactsService } from 'src/app/services/contacts.service';
 
 @Component({
   selector: 'app-contacts-modal',
@@ -8,62 +9,20 @@ import { ModalController } from '@ionic/angular';
 })
 export class ContactsModalPage implements OnInit {
 
-  contacts :Contact[]= [
-    {
-      phoneNumber:'774688435',
-      name: 'Nicolas Ndour'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Jean Diouf'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Marie Séne'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Fatou Diop'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Dialo Boubacar'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Ba Moussa'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Alice Mendy'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Niang Mame Mar'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Michel Faye'
-    },
-    {
-      phoneNumber:'774688435',
-      name: 'Nicolas Ndour'
-    },
-  ]
+  contacts :Contact[];
+  
   searchText: string;
-  name = "nicolas"
-  constructor(private modalCtrl:ModalController) { 
+  
+  constructor(private modalCtrl:ModalController,private contactSvc:ContactsService) { 
     this.searchText = '';
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.contacts = this.contactSvc.contacts;
   }
 
   onDismiss(){
-    this.modalCtrl.dismiss({
-      phoneNumber:"",
-      name:""
-    })
+    this.modalCtrl.dismiss();
   }
 
   onSelected(contact){
@@ -79,7 +38,4 @@ export class ContactsModalPage implements OnInit {
   }
 }
 
-export interface Contact {
-  name:String,
-  phoneNumber:String
-}
+

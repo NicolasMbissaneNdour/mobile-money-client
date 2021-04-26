@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { ContactsModalPage } from '../modals/contacts-modal/contacts-modal.page';
+import { AlertController, ModalController } from '@ionic/angular';
+import { Contact, ContactsService } from '../services/contacts.service';
 
 @Component({
   selector: 'app-tab4',
@@ -9,34 +9,49 @@ import { ContactsModalPage } from '../modals/contacts-modal/contacts-modal.page'
 })
 export class Tab4Page implements OnInit {
   
-  contact:any;
+  contact:Contact;
   loading: Boolean;
+  amountAccount:number = 10000;
+  amount:number;
 
-  constructor(private modalCtrl: ModalController) { 
+  constructor(private contactsSvc:ContactsService,private alerCtrl:AlertController) { 
     this.loading = false;
-    this.contact = {name:"",phoneNumber:""}; 
+    this.contact = new Contact('','');
   }
 
   ngOnInit() {
   }
 
   async onShowContacts(){
-    const modal = await this.modalCtrl.create({
-      component:ContactsModalPage
-    })
-
-    await modal.present();
-    const data = await  modal.onWillDismiss();
-    if(data.data){
-      console.log(data.data)
-      this.contact = data.data
-    }
-    
-    return data;
+    this.loading = true;
+    const result = await this.contactsSvc.showContacts();
+      if (result) {
+        this.contact = new Contact(result.name,result.phoneNumber);
+      }
+    this.loading = false;
   }
 
-  async onAcheter(){
+  async onBuy(){
     this.loading = true;
   }
+  
+  async onNumberChange(){
+    if (this.contact.phoneNumber.length < 9) {
+      this.contact.name = '';
+    }
+    if (this.contact.phoneNumber.length == 9 && this.contact.isValid() && !this.contact.name) {
+      this.loading = true;
+      const result = await this.contactsSvc.SearchContact(this.contact.phoneNumber);
+      if (result) {
+        this.contact.name = result.name;
+      }
+    }
+    this.loading = false;
+  }
+
+  onAmountChange(){
+    this.amount = this.amount;
+  }
+  
 
 }

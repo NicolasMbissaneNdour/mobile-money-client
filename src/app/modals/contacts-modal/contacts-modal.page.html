@@ -3,7 +3,7 @@
     <ion-title>Contacts</ion-title>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar (ionChange)="onSearch($event)" name="searchText" [(ngModel)]="searchText"></ion-searchbar>
+    <ion-searchbar (ionChange)="onSearch($event)" name="searchText" [(ngModel)]="searchText" [animated]="true" placeholder="Rechercher"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
