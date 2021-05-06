@@ -8,34 +8,64 @@ import { Subject, Subscription } from 'rxjs';
 export class AuthService {
 
   isAuth: Boolean;
-  isAuthSubject: Subject<Boolean>
+  isAuthSubject: Subject<Boolean>;
+  clientSubject:Subject<Client>;
+  client:Client = {balance:0,qrKey:'',token:'',actions:[]};
 
   constructor(private httpClient: HttpClient) { 
-
+    this.isAuth = false;
     this.isAuthSubject = new Subject<Boolean>();
+    this.clientSubject = new Subject<Client>();
   }
 
   /**
    * login
    */
   public login(phoneNumber: String,password: String) : Promise<any> {
-    return new Promise((resolve,reject)=>{
-      var subs : Subscription;
-      subs =  this.httpClient.post("http://localhost:3000/user/login",{phoneNumber:phoneNumber,password:password})
-              .subscribe((result: Response)=>{
-                if(result.status == "ok"){
-                  this.isAuth = false;
-                  console.log(result);
-                }
-                else{
-                  if(result.status == "error"){
-                    this.isAuth = false;
+    try {
+      return new Promise((resolve,reject)=>{
+        var subs : Subscription;
+        subs =  this.httpClient.post("https://emoneyserver.herokuapp.com/user/login",{phoneNumber:phoneNumber,password:password})
+                .subscribe((result: Response)=>{
+                  if(result.status == "ok"){
+                    this.isAuth = true;
+                    console.log(result);
+                    this.client.balance = result.data.balance;
+                    this.client.qrKey = result.data.qrKey;
+                    this.client.token = result.data.token;
+                    this.emmitClientSubject();
                   }
-                }
-                subs.unsubscribe();
-                resolve(result)
-              })
-    })
+                  else{
+                    if(result.status == "error"){
+                      this.isAuth = false;
+                    }
+                  }
+                  subs.unsubscribe();
+                  resolve(result)
+                },
+                (error)=>{
+                  if (error.name) {
+                    if (error.name == 'HttpErrorResponse') {
+                      const response:Response = {
+                        status:"error",
+                        message:"Erreur réseau verifiez votre connexion!",
+                        data:[]
+                      }
+                      resolve(response);
+                    }
+                  }
+                  const response:Response = {
+                    status:"error",
+                    message:"Erreur réseau verifiez votre connexion",
+                    data:[]
+                  }
+                  resolve(response);
+                })
+      })
+    } catch (error) {
+      console.log("erro")
+    }
+    
     
   }
 
@@ -43,7 +73,7 @@ export class AuthService {
    * logout
    */
   public logout() {
-    
+    this.isAuth = false;
   }
 
   /**
@@ -51,7 +81,7 @@ export class AuthService {
    */
   public register(phoneNumber: String,password: String): Promise<any> {
     return new Promise((resolve,reject)=>{
-      const subs = this.httpClient.post("http://localhost:3000/user/register",{phoneNumber:phoneNumber,password:password})
+      const subs = this.httpClient.post("https://emoneyserver.herokuapp.com/user/register",{phoneNumber:phoneNumber,password:password})
                         .subscribe((result: Response)=>{
                           if (result.status == "ok") {
                             this.isAuth = true;
@@ -63,6 +93,20 @@ export class AuthService {
                           console.log(result)
                           subs.unsubscribe();
                           resolve(result);
+                        },
+                        (error)=>{
+                          if (error.name) {
+                            if (error.name == 'HttpErrorResponse') {
+                              resolve({
+                                status:'error',
+                                message:'Erreur réseau verifiez votre connexion!'
+                              });
+                            }
+                          }
+                          resolve({
+                            status:'error',
+                            message:'Erreur réseau verifiez votre connexion'
+                          })
                         })
     })
   }
@@ -74,10 +118,24 @@ export class AuthService {
     this.isAuthSubject.next(this.isAuth)
   }
 
+  /**
+   * emmitClientSubject
+   */
+  public emmitClientSubject() {
+    this.clientSubject.next(this.client);
+  }
+
 }
 
 export interface Response{
   status: String,
   message: String,
   data: any
+}
+
+export interface Client{
+  token:String,
+  qrKey:String,
+  balance:Number,
+  actions:any[]
 }

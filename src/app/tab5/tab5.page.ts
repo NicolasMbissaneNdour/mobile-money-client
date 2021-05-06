@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth/auth.service';
 import { ShareService } from '../services/share/share.service';
 
 @Component({
@@ -46,7 +47,7 @@ export class Tab5Page implements OnInit {
       name:"logout"
     },
   ]
-  constructor(private shareSvc:ShareService,private router:Router) { }
+  constructor(private shareSvc:ShareService,private router:Router,private authSvc:AuthService) { }
 
   ngOnInit() {
   }
@@ -58,6 +59,10 @@ export class Tab5Page implements OnInit {
     }
     if(name == "modifyPIN"){
       this.router.navigate(['/modify-password']);
+    }
+    if (name == "logout") {
+      this.authSvc.logout();
+      this.router.navigate(['/login']);
     }
   }
 

@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuardService } from './services/auth/auth-guard.service';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
+    canActivate:[AuthGuardService]
   },
   {
     path: 'history-modal',
-    loadChildren: () => import('./modals/history-modal/history-modal.module').then( m => m.HistoryModalPageModule)
+    loadChildren: () => import('./modals/history-modal/history-modal.module').then( m => m.HistoryModalPageModule),
+    canActivate:[AuthGuardService]
   },
   {
     path: 'card-modal',
@@ -24,11 +27,13 @@ const routes: Routes = [
   },
   {
     path: 'contacts-modal',
-    loadChildren: () => import('./modals/contacts-modal/contacts-modal.module').then( m => m.ContactsModalPageModule)
+    loadChildren: () => import('./modals/contacts-modal/contacts-modal.module').then( m => m.ContactsModalPageModule),
+    canActivate:[AuthGuardService]
   },
   {
     path: 'modify-password',
-    loadChildren: () => import('./auth/modify-password/modify-password.module').then( m => m.ModifyPasswordPageModule)
+    loadChildren: () => import('./auth/modify-password/modify-password.module').then( m => m.ModifyPasswordPageModule),
+    canActivate:[AuthGuardService]
   },
 ];
 @NgModule({

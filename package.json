@@ -23,6 +23,7 @@
     "@capacitor/android": "^2.4.7",
     "@capacitor/core": "2.4.7",
     "@ionic/angular": "^5.5.2",
+    "@ionic/storage-angular": "^3.0.6",
     "angularx-qrcode": "^11.0.0",
     "google-libphonenumber": "^3.2.19",
     "rxjs": "~6.6.0",

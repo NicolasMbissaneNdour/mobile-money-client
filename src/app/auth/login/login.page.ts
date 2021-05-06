@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -6,20 +7,23 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements OnInit,OnDestroy {
   loading : Boolean;
   phoneNumber: String;
   password: String;
   errorMsg: String;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService,private router:Router) {
     this.loading = false;
-    this.phoneNumber = '';
-    this.password = '';
+    this.phoneNumber = '774688435';
+    this.password = '12345678';
     this.errorMsg = '';
    }
 
   ngOnInit() {
+  }
+  ngOnDestroy(){
+    console.log("destroyed")
   }
 
   async onLogin(){
@@ -28,7 +32,11 @@ export class LoginPage implements OnInit {
     if (result.status == "error") {
       this.errorMsg = result.message
     }
-    this.loading = false
+    else{
+      this.router.navigate(['/'],{replaceUrl:true});
+      
+    }
+    this.loading = false;
   }
 
 }

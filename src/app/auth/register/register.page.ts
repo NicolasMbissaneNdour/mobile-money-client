@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class RegisterPage implements OnInit {
   phoneNumber: String;
   password: String;
 
-  constructor(private authService:AuthService) { 
+  constructor(private authService:AuthService,private router:Router) { 
     this.loading = false;
     this.errorMsg = '';
     this.phoneNumber = '';
@@ -28,6 +29,9 @@ export class RegisterPage implements OnInit {
     const result = await this.authService.register(this.phoneNumber,this.password);
     if (result.status == "error") {
       this.errorMsg = result.message;
+    }
+    else{
+      this.router.navigate(['/']);
     }
     this.loading = false;
   }
