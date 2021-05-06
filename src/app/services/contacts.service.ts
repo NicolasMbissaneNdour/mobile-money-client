@@ -64,12 +64,12 @@ export class ContactsService {
     //If permission is not granted we present an alert 
     const permission = await this.checkPermission();
     if (permission.status == "error") {
-      const alert = this.alertCtrl.create({
+      const alert = await this.alertCtrl.create({
         header:"Erreur",
         message:permission.message,
         buttons:['OK']
       })
-      await (await alert).present();
+      await alert.present();
       return;
     }
 

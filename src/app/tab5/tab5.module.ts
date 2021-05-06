@@ -7,14 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { Tab5PageRoutingModule } from './tab5-routing.module';
 
 import { Tab5Page } from './tab5.page';
+import { CallNumber } from '@ionic-native/call-number/ngx';
+import { CallService } from '../services/call/call.service';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    Tab5PageRoutingModule
+    Tab5PageRoutingModule,
   ],
-  declarations: [Tab5Page]
+  declarations: [Tab5Page],
+  providers:[CallService,CallNumber]
 })
 export class Tab5PageModule {}

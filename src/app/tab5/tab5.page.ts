@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
+import { CallService } from '../services/call/call.service';
 import { ShareService } from '../services/share/share.service';
 
 @Component({
@@ -47,12 +48,15 @@ export class Tab5Page implements OnInit {
       name:"logout"
     },
   ]
-  constructor(private shareSvc:ShareService,private router:Router,private authSvc:AuthService) { }
+  constructor(private shareSvc:ShareService,
+              private router:Router,
+              private authSvc:AuthService,
+              private callSvc:CallService) { }
 
   ngOnInit() {
   }
 
-  onParam(name){
+  async onParam(name){
     console.log(name)
     if (name == "invite") {
       this.shareSvc.share()
@@ -63,6 +67,9 @@ export class Tab5Page implements OnInit {
     if (name == "logout") {
       this.authSvc.logout();
       this.router.navigate(['/login']);
+    }
+    if (name == "callService") {
+      await this.callSvc.call();
     }
   }
 
