@@ -19,17 +19,17 @@
     </ion-item>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" [disabled]="loading || !amount || amount > amountAccount || !contact.isValid()" (click)="onBuy()">
-          <span *ngIf="!loading">Acheter</span>
-          <ion-spinner *ngIf="loading" name="lines"></ion-spinner>
+        <ion-button expand="block" [disabled]="loading || !amount || amount > amountAccount || !contact.isValid() || onOperate" (click)="onBuy()">
+          <span *ngIf="!loading && !onOperate">Acheter</span>
+          <ion-spinner *ngIf="loading || onOperate" name="lines"></ion-spinner>
         </ion-button>
       </ion-col>
     </ion-row>
   </form>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="secondary" [disabled]="loading" (click)="onShowContacts()">
-      <ion-icon name="person-add-outline" *ngIf="!loading"></ion-icon>
-      <ion-spinner *ngIf="loading" name="lines"></ion-spinner>
+    <ion-fab-button color="secondary" [disabled]="loading || onOperate" (click)="onShowContacts()">
+      <ion-icon name="person-add-outline" *ngIf="!loading && !onOperate"></ion-icon>
+      <ion-spinner *ngIf="loading || onOperate" name="lines"></ion-spinner>
     </ion-fab-button>
   </ion-fab>
   <ion-row *ngIf="amount >= amountAccount">

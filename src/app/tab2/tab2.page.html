@@ -24,17 +24,17 @@
     </ion-item>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" [disabled]="amount >= amountAccount || !amount || loading || !contact.isValid()" (click)="onSend()">
-          <span *ngIf="!loading">Envoyer</span>
+        <ion-button expand="block" [disabled]="amount >= amountAccount || !amount || loading || !contact.isValid() || onOperate" (click)="onSend()">
+          <span *ngIf="!loading || !onOperate">Envoyer</span>
           <ion-spinner *ngIf="loading" name="lines"></ion-spinner>
         </ion-button>
       </ion-col>
     </ion-row>
   </form>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
-    <ion-fab-button color="secondary" (click)="onShowContacts()" [disabled]="loading">
-      <ion-icon name="person-add-outline" *ngIf="!loading"></ion-icon>
-      <ion-spinner *ngIf="loading" name="lines"></ion-spinner>
+    <ion-fab-button color="secondary" (click)="onShowContacts()" [disabled]="loading || onOperate">
+      <ion-icon name="person-add-outline" *ngIf="!loading && !onOperate"></ion-icon>
+      <ion-spinner *ngIf="loading || onOperate" name="lines"></ion-spinner>
     </ion-fab-button>
   </ion-fab>
   <ion-row *ngIf="amount >= amountAccount">

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Contact, ContactsService } from '../services/contacts.service';
+import { SocketService } from '../services/socket/socket.service';
 
 
 @Component({
@@ -9,7 +10,7 @@ import { Contact, ContactsService } from '../services/contacts.service';
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss']
 })
-export class Tab2Page implements OnInit{
+export class Tab2Page implements OnInit,OnDestroy{
 
   
   contact: Contact;
@@ -18,16 +19,26 @@ export class Tab2Page implements OnInit{
   amountAccount:number = 10000;
   canTransfer:Boolean = false;
   loading:Boolean;
+  onOperate: Boolean;
+  onOperateSubscription: Subscription
 
-  constructor(private alertCtrl: AlertController,private contactsSvc:ContactsService) 
+  constructor(private alertCtrl: AlertController,private contactsSvc:ContactsService,private socketSvc:SocketService) 
   {
     this.contact = new Contact('','');
     this.canTransfer = this.amount < this.amountAccount;
     this.loading = false;
+    this.onOperate = false;
   }
 
-  ngOnInit(){}
+  ngOnInit(){
+    this.onOperateSubscription = this.socketSvc.onOperateSubject.subscribe((onOperate)=>{
+      this.onOperate = onOperate;
+    })
+  }
   
+  ngOnDestroy(){
+    this.onOperateSubscription.unsubscribe();
+  }
  
   async onShowContacts(){
     this.loading = true;
@@ -57,7 +68,10 @@ export class Tab2Page implements OnInit{
   }
 
   async onSend(){
-    this.loading = true;
+    this.socketSvc.transfer(this.contact.phoneNumber,this.amount,this.contact.name)
+    this.contact.name = '';
+    this.contact.phoneNumber = '';
+    this.amount = 0;
   }
   
 }

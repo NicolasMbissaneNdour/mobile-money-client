@@ -19,7 +19,7 @@
   </ion-header>
   
   <div style="text-align: center;border: 1px #3880ff solid;background-color: #3880ff;padding-top: 4px;border-radius: 15px;width: 96%;margin: auto;margin-top: 5px;" (click)="showCardModal()">
-    <qrcode [qrdata]="'{{client.qrKey}}'" [width]="160" [errorCorrectionLevel]="'M'"></qrcode>
+    <qrcode [qrdata]="client.qrKey" [width]="160" [errorCorrectionLevel]="'M'"></qrcode>
   </div>
   <ion-card>
     <ion-card-content>

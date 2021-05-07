@@ -23,7 +23,6 @@ export class LoginPage implements OnInit,OnDestroy {
   ngOnInit() {
   }
   ngOnDestroy(){
-    console.log("destroyed")
   }
 
   async onLogin(){

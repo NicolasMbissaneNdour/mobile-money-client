@@ -1,25 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { Contact, ContactsService } from '../services/contacts.service';
+import { SocketService } from '../services/socket/socket.service';
 
 @Component({
   selector: 'app-tab4',
   templateUrl: './tab4.page.html',
   styleUrls: ['./tab4.page.scss'],
 })
-export class Tab4Page implements OnInit {
+export class Tab4Page implements OnInit ,OnDestroy{
   
   contact:Contact;
   loading: Boolean;
   amountAccount:number = 10000;
   amount:number;
+  onOperate:Boolean;
+  onOperateSubscription: Subscription;
 
-  constructor(private contactsSvc:ContactsService,private alerCtrl:AlertController) { 
+  constructor(private contactsSvc:ContactsService,private alerCtrl:AlertController,private socketSvc:SocketService) { 
     this.loading = false;
     this.contact = new Contact('','');
   }
 
   ngOnInit() {
+    this.onOperateSubscription = this.socketSvc.onOperateSubject.subscribe((onOperate)=>{
+      this.onOperate = onOperate;
+    })
+    this.socketSvc.emmitOnOperateSubject();
+  }
+
+
+  ngOnDestroy(){
+    this.onOperateSubscription.unsubscribe();
   }
 
   async onShowContacts(){
@@ -32,7 +45,7 @@ export class Tab4Page implements OnInit {
   }
 
   async onBuy(){
-    this.loading = true;
+    this.socketSvc.purchase(this.contact.phoneNumber,this.amount,this.contact.name);
   }
   
   async onNumberChange(){

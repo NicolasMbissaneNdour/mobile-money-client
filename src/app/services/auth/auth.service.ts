@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
+import { SocketService } from '../socket/socket.service';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class AuthService {
   clientSubject:Subject<Client>;
   client:Client = {balance:0,qrKey:'',token:'',actions:[]};
 
-  constructor(private httpClient: HttpClient) { 
+  constructor(private httpClient: HttpClient,private storageSvc:StorageService) { 
     this.isAuth = false;
     this.isAuthSubject = new Subject<Boolean>();
     this.clientSubject = new Subject<Client>();
@@ -26,13 +28,17 @@ export class AuthService {
       return new Promise((resolve,reject)=>{
         var subs : Subscription;
         subs =  this.httpClient.post("https://emoneyserver.herokuapp.com/user/login",{phoneNumber:phoneNumber,password:password})
-                .subscribe((result: Response)=>{
+                .subscribe(async (result: Response)=>{
                   if(result.status == "ok"){
                     this.isAuth = true;
-                    console.log(result);
                     this.client.balance = result.data.balance;
                     this.client.qrKey = result.data.qrKey;
                     this.client.token = result.data.token;
+                    await this.storageSvc.init();
+                    await this.storageSvc.set('balance',result.data.balance);
+                    await this.storageSvc.set('qrKey',result.data.qrKey);
+                    await this.storageSvc.set('token',result.data.token);
+                    const test = await this.storageSvc.get('data');
                     this.emmitClientSubject();
                   }
                   else{

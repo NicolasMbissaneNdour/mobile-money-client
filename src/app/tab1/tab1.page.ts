@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { CardModalPage } from '../modals/card-modal/card-modal.page';
 import { HistoryModalPage } from '../modals/history-modal/history-modal.page';
 import { AuthService, Client } from '../services/auth/auth.service';
+import { SocketService } from '../services/socket/socket.service';
 
 @Component({
   selector: 'app-tab1',
@@ -15,7 +16,7 @@ export class Tab1Page implements OnInit,OnDestroy{
   clientSubscription: Subscription;
   client:Client;
 
-  constructor(public modalCtrl: ModalController,private autSvc:AuthService,private router:Router) {
+  constructor(public modalCtrl: ModalController,private autSvc:AuthService,private router:Router,private socketSvc:SocketService) {
     this.client = this.autSvc.client;
   }
 
