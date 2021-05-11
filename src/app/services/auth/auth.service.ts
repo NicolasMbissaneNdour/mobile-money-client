@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
-import { SocketService } from '../socket/socket.service';
 import { StorageService } from '../storage/storage.service';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +12,14 @@ export class AuthService {
   isAuth: Boolean;
   isAuthSubject: Subject<Boolean>;
   clientSubject:Subject<Client>;
-  client:Client = {balance:0,qrKey:'',token:'',actions:[]};
+  client:Client = {};
 
   constructor(private httpClient: HttpClient,private storageSvc:StorageService) { 
     this.isAuth = false;
     this.isAuthSubject = new Subject<Boolean>();
     this.clientSubject = new Subject<Client>();
   }
+
 
   /**
    * login
@@ -31,14 +32,11 @@ export class AuthService {
                 .subscribe(async (result: Response)=>{
                   if(result.status == "ok"){
                     this.isAuth = true;
-                    this.client.balance = result.data.balance;
-                    this.client.qrKey = result.data.qrKey;
-                    this.client.token = result.data.token;
+                    const client = result.data as Client;
+                    this.client = client;
+                    this.client.password = CryptoJS.AES.encrypt(password,'Nicolas').toString();
                     await this.storageSvc.init();
-                    await this.storageSvc.set('balance',result.data.balance);
-                    await this.storageSvc.set('qrKey',result.data.qrKey);
-                    await this.storageSvc.set('token',result.data.token);
-                    const test = await this.storageSvc.get('data');
+                    await this.storageSvc.set('client',client);
                     this.emmitClientSubject();
                   }
                   else{
@@ -80,6 +78,7 @@ export class AuthService {
    */
   public logout() {
     this.isAuth = false;
+    this.emmitIsAuthSubject();
   }
 
   /**
@@ -131,6 +130,20 @@ export class AuthService {
     this.clientSubject.next(this.client);
   }
 
+  public async verifyPassword(password:String) {
+    try {
+      await this.storageSvc.init();
+      const client  = await this.storageSvc.get('client') as Client;
+      const realPass = CryptoJS.AES.decrypt(client.password,'Nicolas').toString(CryptoJS.enc.Utf8);
+      console.log(realPass)
+      return realPass == password;
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
+  
+
 }
 
 export interface Response{
@@ -140,8 +153,10 @@ export interface Response{
 }
 
 export interface Client{
-  token:String,
-  qrKey:String,
-  balance:Number,
-  actions:any[]
+  token?:String,
+  qrKey?:String,
+  balance?:Number,
+  actions?:any[],
+  phoneNumber?:String,
+  password?:String
 }

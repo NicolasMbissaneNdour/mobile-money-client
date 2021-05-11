@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Plugins} from '@capacitor/core';
+import { AlertController } from '@ionic/angular';
 const { Share } = Plugins;
 
 @Injectable({
@@ -7,11 +8,11 @@ const { Share } = Plugins;
 })
 export class ShareService {
 
-  constructor() { }
+  constructor(private alertController: AlertController) { }
 
   async share(){
     try {
-      let shareRet = await Share.share({
+      await Share.share({
         title:'Money App by Nics',
         text:"Utilisons Emoney,une application rapide,simple et sécurisée pour envoyer et recevoir de l'argent ,payer ses factures et acheter du crédit.Téléchargez le sur ",
         url:'https://github.com/NicolasMbissaneNdour',
@@ -19,8 +20,20 @@ export class ShareService {
       });
       
     } catch (error) {
-      console.log(error);
+      await this.presentAlert(error);
     }
     
   }
+
+  async presentAlert(message) {
+    const alert = await this.alertController.create({
+      header: 'Erreur',
+      message: message,
+      buttons: ['OK']
+    });
+  
+    await alert.present();
+  }
+
+
 }

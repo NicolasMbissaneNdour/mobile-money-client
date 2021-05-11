@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
 import { CallService } from '../services/call/call.service';
 import { ShareService } from '../services/share/share.service';
+import { SocketService } from '../services/socket/socket.service';
 
 @Component({
   selector: 'app-tab5',
@@ -51,7 +52,8 @@ export class Tab5Page implements OnInit {
   constructor(private shareSvc:ShareService,
               private router:Router,
               private authSvc:AuthService,
-              private callSvc:CallService) { }
+              private callSvc:CallService,
+              private socketSvc:SocketService) { }
 
   ngOnInit() {
   }
@@ -65,6 +67,7 @@ export class Tab5Page implements OnInit {
       this.router.navigate(['/modify-password']);
     }
     if (name == "logout") {
+      this.socketSvc.disconnect();
       this.authSvc.logout();
       this.router.navigate(['/login']);
     }
