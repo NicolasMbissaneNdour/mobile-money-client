@@ -136,7 +136,12 @@ export class AuthService {
       const client  = await this.storageSvc.get('client') as Client;
       const realPass = CryptoJS.AES.decrypt(client.password,'Nicolas').toString(CryptoJS.enc.Utf8);
       console.log(realPass)
-      return realPass == password;
+      const result = realPass == password;
+      if(result) {
+        this.client = client;
+        this.emmitClientSubject();
+      } 
+      return result;
     } catch (error) {
       console.log(error);
     }

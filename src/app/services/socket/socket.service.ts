@@ -82,6 +82,7 @@ export class SocketService {
     this.socket.on("qrKey", async (data)=>{
       //console.log(data);
       this.authSvc.client.qrKey = data.qrKey;
+      this.authSvc.client.balance = data.balance;
       this.authSvc.emmitClientSubject();
     })
 
@@ -90,7 +91,13 @@ export class SocketService {
       this.onOperate = false;
       this.emmitOnOperateSubject();
     })
-
+    
+    this.socket.on(`${this.authSvc.client.phoneNumber}`, async (data)=>{
+      await this.presentAlert(data.subHeader,data.message);
+      this.onOperate = false;
+      this.emmitOnOperateSubject();
+    })
+    
     this.socket.on("faillOperation", async (data) => {
       await this.presentAlert(data.subHeader,data.message);
       this.onOperate = false;
@@ -102,12 +109,12 @@ export class SocketService {
     this.onOperateSubject.next(this.onOperate);
   }
 
-  async transfer(to:String,amout:Number,name:String='') {
+  async transfer(to:String,amount:Number,name:String='') {
     this.onOperate = true;
     this.emmitOnOperateSubject();
     this.socket.emit("transfer",{
       to:to,
-      amout:amout,
+      amount:amount,
       name:name
     });
   }

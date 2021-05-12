@@ -27,6 +27,8 @@ export class LoginPage implements OnInit,OnDestroy {
     await this.storageSvc.init();
     const client = await this.storageSvc.get('client') as Client;
     if (client) {
+      this.authService.client = client;
+      this.authService.emmitClientSubject();
       this.loading = false;
       this.router.navigate(['/password'],{replaceUrl:true})
       //await this.socketSvc.connect();
