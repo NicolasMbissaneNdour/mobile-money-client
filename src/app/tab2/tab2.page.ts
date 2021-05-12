@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { AuthService, Client } from '../services/auth/auth.service';
 import { Contact, ContactsService } from '../services/contacts.service';
 import { SocketService } from '../services/socket/socket.service';
 
@@ -16,24 +17,32 @@ export class Tab2Page implements OnInit,OnDestroy{
   contact: Contact;
   amount: number;
   amountRec:number;
-  amountAccount:number = 10000;
   canTransfer:Boolean = false;
   loading:Boolean;
   onOperate: Boolean;
-  onOperateSubscription: Subscription
+  onOperateSubscription: Subscription;
+  client: Client = {};
+  clientSubscription:Subscription;
+  loadingAmount:Boolean;
 
-  constructor(private alertCtrl: AlertController,private contactsSvc:ContactsService,private socketSvc:SocketService) 
+  constructor(private alertCtrl: AlertController,private contactsSvc:ContactsService,private socketSvc:SocketService,private authService:AuthService) 
   {
     this.contact = new Contact('','');
-    this.canTransfer = this.amount < this.amountAccount;
-    this.loading = false;
+    this.canTransfer = this.amount < this.client.balance;
     this.onOperate = false;
+    this.loadingAmount = false;
+    
   }
 
   ngOnInit(){
     this.onOperateSubscription = this.socketSvc.onOperateSubject.subscribe((onOperate)=>{
       this.onOperate = onOperate;
     })
+    this.clientSubscription = this.authService.clientSubject.subscribe((client)=>{
+      this.client = client;
+      this.loadingAmount = false;
+    })
+    this.authService.emmitClientSubject();
   }
   
   ngOnDestroy(){

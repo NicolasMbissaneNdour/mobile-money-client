@@ -161,8 +161,7 @@ export class SocketService {
 
   async presentAlert(subHeader:string,message:string) {
     const alert = await this.alertController.create({
-      header: 'Alert',
-      subHeader: subHeader,
+      header: subHeader,
       message: message,
       buttons: ['OK']
     });
